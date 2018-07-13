@@ -114,7 +114,7 @@ instance.prototype.action = function(action) {
 
 	switch (action.action){
 
-		case 'powerOn':
+		case 'cue_exec':
 			cmd = '<photon> CUE_EXEC '+ opt.cue + ' </photon>';
 			break;
 
@@ -125,7 +125,7 @@ instance.prototype.action = function(action) {
 
 	if (cmd !== undefined) {
 
-		debug('sending ',cmd,"to",self.config.host);
+		debug('sending ',cmd,opt.cue,"to",self.config.host);
 
 		if (self.socket !== undefined && self.socket.connected) {
 			self.socket.send(cmd + "\r");
