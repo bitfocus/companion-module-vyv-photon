@@ -1,17 +1,19 @@
 {
-  "name": "vyvphoton",
-  "version": "1.0.0",
+	"name": "vyvphoton",
+	"version": "1.0.1",
 	"api_version": "1.0.0",
-	"keywords": [ "Media Server" ],
+	"keywords": [
+		"Media Server"
+	],
 	"manufacturer": "VYV",
 	"product": "Photon",
 	"shortname": "photon",
-  "description": "Module to control VYV Photon mediaserver",
+	"description": "Module to control VYV Photon mediaserver",
 	"homepage": "https://www.vyv.ca/products/photon/",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "Per Roine <per.roine@gmail.com>",
-  "license": "MIT"
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "Per Roine <per.roine@gmail.com>",
+	"license": "MIT"
 }
