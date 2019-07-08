@@ -124,11 +124,10 @@ instance.prototype.action = function(action) {
 
 
 	if (cmd !== undefined) {
-
 		debug('sending ',cmd,opt.cue,"to",self.config.host);
 
 		if (self.socket !== undefined && self.socket.connected) {
-			self.socket.send(cmd + "\r");
+			self.socket.send(cmd + "\n");
 		} else {
 			debug('Socket not connected :(');
 		}
