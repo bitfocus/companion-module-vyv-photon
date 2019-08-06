@@ -85,7 +85,7 @@ instance.prototype.destroy = function() {
 		self.socket.destroy();
 	}
 
-	debug("destroy", self.id);;
+	debug("destroy", self.id);
 };
 
 
@@ -94,16 +94,16 @@ instance.prototype.actions = function(system) {
 
 	self.system.emit('instance_actions', self.id, {
 		'cue_exec':    {
-			 label: 'Recall (cue)',
-			 options: [
-				 {
+			label: 'Recall (cue)',
+			options: [
+				{
 					type: 'textinput',
 					label: 'Cue ID',
 					id: 'cue',
 					regex: self.REGEX_NUMBER
-				 }
-			 ]
-		 }
+				}
+			]
+		}
 	});
 };
 
@@ -118,10 +118,7 @@ instance.prototype.action = function(action) {
 			cmd = '<photon> CUE_EXEC '+ opt.cue + ' </photon>';
 			break;
 
-	};
-
-
-
+	}
 
 	if (cmd !== undefined) {
 		debug('sending ',cmd,opt.cue,"to",self.config.host);
