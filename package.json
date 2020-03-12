@@ -1,5 +1,8 @@
 {
-	"name": "vyvphoton",
+	"name": "vyv-photon",
+	"legacy": [
+		"vyvphoton"
+	],
 	"version": "1.0.4",
 	"api_version": "1.0.0",
 	"keywords": [
