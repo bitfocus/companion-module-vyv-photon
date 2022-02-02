@@ -12,11 +12,18 @@
 	"product": "Photon",
 	"shortname": "photon",
 	"description": "Module to control VYV Photon mediaserver",
-	"homepage": "https://www.vyv.ca/products/photon/",
+	"homepage": "https://github.com/bitfocus/companion-module-vyv-photon#readme",
 	"main": "index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"author": "Per Roine <per.roine@gmail.com>",
-	"license": "MIT"
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/bitfocus/companion-module-vyv-photon/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/bitfocus/companion-module-vyv-photon.git"
+	}
 }
