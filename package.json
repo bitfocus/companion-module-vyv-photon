@@ -3,7 +3,7 @@
 	"legacy": [
 		"vyvphoton"
 	],
-	"version": "1.0.6",
+	"version": "1.0.7",
 	"api_version": "1.0.0",
 	"keywords": [
 		"Media Server"
@@ -18,6 +18,9 @@
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"author": "Per Roine <per.roine@gmail.com>",
+	"contributors": [
+		"David Fox <david@got-fox.com>",
+	],
 	"license": "MIT",
 	"bugs": {
 		"url": "https://github.com/bitfocus/companion-module-vyv-photon/issues"
