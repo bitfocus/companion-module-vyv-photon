@@ -83,7 +83,7 @@ class instance extends InstanceBase {
 			}
 		}
 
-		this.setActions({
+		this.setActionDefinitions({
 			cue_exec: {
 				label: 'Recall (cue)',
 				options: [
