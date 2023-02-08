@@ -1,32 +1,20 @@
 {
 	"name": "vyv-photon",
-	"legacy": [
-		"vyvphoton"
-	],
-	"version": "1.0.7",
-	"api_version": "1.0.0",
-	"keywords": [
-		"Media Server"
-	],
-	"manufacturer": "VYV",
-	"product": "Photon",
-	"shortname": "photon",
-	"description": "Module to control VYV Photon mediaserver",
-	"homepage": "https://github.com/bitfocus/companion-module-vyv-photon#readme",
+	"version": "2.0.0",
 	"main": "index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
-	"author": "Per Roine <per.roine@gmail.com>",
-	"contributors": [
-		"David Fox <david@got-fox.com>",
-	],
+	"prettier": "@companion-module/tools/.prettierrc.json",
 	"license": "MIT",
-	"bugs": {
-		"url": "https://github.com/bitfocus/companion-module-vyv-photon/issues"
-	},
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/bitfocus/companion-module-vyv-photon.git"
+	},
+	"dependencies": {
+		"@companion-module/base": "~1.1.1"
+	},
+	"devDependencies": {
+		"@companion-module/tools": "^1.0.0"
 	}
 }
