@@ -115,7 +115,7 @@ instance.prototype.action = function(action) {
 	switch (action.action){
 
 		case 'cue_exec':
-			cmd = '<photon> CUE_EXEC '+ opt.cue + ' </photon>';
+			cmd = '<photon> CUE_EXEC_ID '+ opt.cue + ' </photon>';
 			break;
 
 	}
