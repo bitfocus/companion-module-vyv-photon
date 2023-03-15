@@ -85,7 +85,7 @@ class instance extends InstanceBase {
 
 		this.setActionDefinitions({
 			cue_exec: {
-				label: 'Recall (cue)',
+				name: 'Recall (cue)',
 				options: [
 					{
 						type: 'textinput',
@@ -100,7 +100,7 @@ class instance extends InstanceBase {
 				},
 			},
 			spec_code: {
-				label: 'Special Code',
+				name: 'Special Code',
 				options: [
 					{
 						type: 'dropdown',
