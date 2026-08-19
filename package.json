@@ -1,7 +1,8 @@
 {
 	"name": "vyv-photon",
-	"version": "2.1.0",
+	"version": "3.0.0",
 	"main": "index.js",
+	"type": "module",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
@@ -12,9 +13,9 @@
 		"url": "git+https://github.com/bitfocus/companion-module-vyv-photon.git"
 	},
 	"dependencies": {
-		"@companion-module/base": "^1.11.0"
+		"@companion-module/base": "^1.14.1"
 	},
 	"devDependencies": {
-		"@companion-module/tools": "^1.5.2"
+		"@companion-module/tools": "^2.7.2"
 	}
 }

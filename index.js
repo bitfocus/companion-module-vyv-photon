@@ -1,4 +1,6 @@
-const { Regex, InstanceBase, TCPHelper, InstanceStatus, runEntrypoint } = require('@companion-module/base')
+import { Regex, InstanceBase, TCPHelper, InstanceStatus, runEntrypoint } from '@companion-module/base'
+import { getActionDefinitions } from './actions.js'
+import { getPresetDefinitions } from './presets.js'
 
 class instance extends InstanceBase {
 	async init(config) {
@@ -35,6 +37,7 @@ class instance extends InstanceBase {
 		}
 
 		this.init_actions()
+		this.init_presets()
 		this.init_tcp()
 	}
 
@@ -103,7 +106,7 @@ class instance extends InstanceBase {
 		if (this.config.verbose) {
 			this.log('info', `Attempting to connect to ${this.config.host}:${this.config.port} (interval ${this.reconnectInterval}ms)`)
 		}
-		
+
 		// Create TCP helper with auto-reconnect
 		this.socket = new TCPHelper(this.config.host, this.config.port, {
 			reconnect: false,
@@ -183,12 +186,12 @@ class instance extends InstanceBase {
 				this.reconnectInterval = 10000
 				this.log('warn', 'Too many failures. Slowing reconnect interval to 10 seconds.')
 			}
-		
+
 			setTimeout(() => {
 				this.init_tcp()
 			}, this.reconnectInterval)
 		})
-		
+
 		this.socket.on('close', () => {
 			if (this.config.verbose) {
 				this.log('warn', 'TCP connection closed')
@@ -197,7 +200,7 @@ class instance extends InstanceBase {
 				connection_status: 'disconnected',
 				connection_failures: this.connectionFailures.toString()
 			});
-		
+
 			setTimeout(() => {
 				this.init_tcp()
 			}, this.reconnectInterval)
@@ -242,124 +245,38 @@ class instance extends InstanceBase {
 		]
 	}
 
+	// Send a raw command string to Photon over the active TCP socket
+	sendCommand(cmd) {
+		if (this.config.verbose) {
+			this.log('info', `sendCommand() called with cmd: ${cmd}`)
+		}
+		if (this.socket && this.socket.isConnected) {
+			if (this.config.verbose) {
+				this.log('debug', 'Socket is connected, sending command')
+			}
+			this.socket.send(cmd + '\n')
+			if (this.config.verbose) {
+				this.log('info', 'Command sent')
+			}
+		} else {
+			this.log('warn', 'sendCommand: Socket not connected, cannot send')
+		}
+	}
+
 	// Define and initialize actions
 	init_actions() {
 		if (this.config.verbose) {
 			this.log('info', 'Initializing action definitions')
 		}
-		const sendCommand = (cmd) => {
-			if (this.config.verbose) {
-				this.log('info', `sendCommand() called with cmd: ${cmd}`)
-			}
-			if (this.socket && this.socket.isConnected) {
-				if (this.config.verbose) {
-					this.log('debug', 'Socket is connected, sending command')
-				}
-				this.socket.send(cmd + '\n')
-				if (this.config.verbose) {
-					this.log('info', 'Command sent')
-				}
-			} else {
-				this.log('warn', 'sendCommand: Socket not connected, cannot send')
-			}
-		}
+		this.setActionDefinitions(getActionDefinitions(this))
+	}
 
-		this.setActionDefinitions({
-			cue_exec: {
-				name: 'Recall (cue)',
-				options: [
-					{
-						type: 'textinput',
-						label: 'Cue ID',
-						id: 'cue',
-						regex: Regex.NUMBER,
-					},
-				],
-				callback: (action) => {
-					if (this.config.verbose) {
-						this.log('info', `Action cue_exec triggered with options: ${JSON.stringify(action.options)}`)
-					}
-					const cmd = '<photon> CUE_EXEC_ID ' + action.options.cue + ' </photon>'
-					sendCommand(cmd)
-				},
-			},
-			spec_code: {
-				name: 'Special Code',
-				options: [
-					{
-						type: 'dropdown',
-						label: 'Special Code',
-						id: 's_code',
-						choices: [
-							{ label: 'Restart Photon', id: '4' },
-							{ label: 'Reboot Server', id: '5' },
-							{ label: 'Quit Photon', id: '6' },
-							{ label: 'Shutdown Server', id: '7' },
-							{ label: 'Toggle UI Visibility', id: '10' },
-						],
-					},
-				],
-				callback: (action) => {
-					if (this.config.verbose) {
-						this.log('info', `Action spec_code triggered with options: ${JSON.stringify(action.options)}`)
-					}
-					const cmd = '<photon> 90BC9E48_6D84_4F8C_AA23_72E3379AC71C ' + action.options.s_code + ' </photon>'
-					sendCommand(cmd)
-				},
-			},
-			update_port: {
-				name: 'Update Target Port',
-				options: [
-					{
-						type: 'textinput',
-						label: 'New Port',
-						id: 'new_port',
-						regex: Regex.PORT,
-					},
-				],
-				callback: (action) => {
-					if (this.config.verbose) {
-						this.log('info', `Action update_port triggered with value: ${action.options.new_port}`)
-					}
-					const newConfig = { ...this.config, port: parseInt(action.options.new_port) };
-					
-					// 1) Persist to disk immediately
-					this.saveConfig(newConfig);
-						
-					// 2) Immediately tear down/re‐initialize the TCP socket on the new port
-					this.config = newConfig;
-					this.setVariableValues({ target_port: newConfig.port.toString() })
-					this.updateStatus(InstanceStatus.Connecting);
-					this.init_tcp();
-				},
-			},
-			update_ip: {
-				name: 'Update Target IP',
-				options: [
-					{
-						type: 'textinput',
-						label: 'New IP Address',
-						id: 'new_ip',
-						regex: Regex.IP,
-					},
-				],
-				callback: (action) => {
-					if (this.config.verbose) {
-						this.log('info', `Action update_ip triggered with value: ${action.options.new_ip}`)
-					}
-					const newConfig = { ...this.config, host: action.options.new_ip }
-			
-					// 1) Persist to disk immediately
-					this.saveConfig(newConfig)
-			
-					// 2) Immediately tear down/re-initialize the TCP socket on the new IP
-					this.config = newConfig
-					this.setVariableValues({ target_ip: newConfig.host })
-					this.updateStatus(InstanceStatus.Connecting)
-					this.init_tcp()
-				},
-			}
-		})
+	// Define and initialize presets
+	init_presets() {
+		if (this.config.verbose) {
+			this.log('info', 'Initializing preset definitions')
+		}
+		this.setPresetDefinitions(getPresetDefinitions())
 	}
 }
 
