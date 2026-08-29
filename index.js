@@ -1,6 +1,7 @@
 import { Regex, InstanceBase, TCPHelper, InstanceStatus, runEntrypoint } from '@companion-module/base'
 import { getActionDefinitions } from './actions.js'
 import { getPresetDefinitions } from './presets.js'
+import { UpgradeScripts } from './upgrades.js'
 
 class instance extends InstanceBase {
 	async init(config) {
@@ -280,4 +281,4 @@ class instance extends InstanceBase {
 	}
 }
 
-runEntrypoint(instance, [])
+runEntrypoint(instance, UpgradeScripts)

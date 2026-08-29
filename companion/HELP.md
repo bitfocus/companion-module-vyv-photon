@@ -5,9 +5,9 @@ Module to control the VYV Photon Media server over TCP. Go to [VYV](https://www.
 Actions:  
 **Recall custom cue** - Recall any cue by entering its numeric ID directly  
 **Recall default cue** - Recall one of Photon's built-in default cues from a searchable dropdown  
-**Special Code** - Send a special system command (Restart Photon, Reboot Server, Quit Photon, Shutdown Server, Toggle UI Visibility)  
-**Update Target Port** - Change the connection's target port at runtime and reconnect  
-**Update Target IP Address** - Change the connection's target IP address at runtime and reconnect
+**Special Code** - Restart Photon, Reboot Server, Quit Photon, Shutdown Server, Toggle UI Visibility  
+**Update Target Port** - Update the Target Port in the connection configuration  
+**Update Target IP** - Update the Target IP Address in the connection configuration
 
 Presets:  
 A ready-to-use button preset is provided for each default cue, under the "Default Cues" category.

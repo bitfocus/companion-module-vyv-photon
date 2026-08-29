@@ -24,9 +24,9 @@ This module also works with VYV's [Xenon](https://www.vyv.ca/products/xenon/) an
 
 - **Recall custom cue** — Recall any cue by entering its numeric ID.
 - **Recall default cue** — Recall one of Photon's built-in default cues from a searchable dropdown (Play, Pause, Universal Crossfade, Auto-Play, Master In/Out points, etc).
-- **Special Code** — Send one of Photon's special system commands (Restart Photon, Reboot Server, Quit Photon, Shutdown Server, Toggle UI Visibility).
-- **Update Target Port** — Change the connection's target port at runtime and reconnect.
-- **Update Target IP Address** — Change the connection's target IP address at runtime and reconnect.
+- **Special Code** — Send a special code (Restart Photon, Reboot Server, Quit Photon, Shutdown Server, Toggle UI Visibility).
+- **Update Target Port** — Change the connection's target port from a button.
+- **Update Target IP** — Change the connection's target IP address from a button.
 
 The two cue actions send the underlying `CUE_EXEC_ID` command.
 
