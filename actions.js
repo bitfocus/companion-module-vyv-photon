@@ -1,4 +1,4 @@
-import { InstanceStatus, Regex } from '@companion-module/base'
+import { Regex, InstanceStatus } from '@companion-module/base'
 import { DEFAULT_CUES } from './cues.js'
 
 export function getActionDefinitions(self) {
@@ -42,9 +42,8 @@ export function getActionDefinitions(self) {
 			options: [
 				{
 					type: 'dropdown',
-					id: 's_code',
 					label: 'Special Code',
-					default: '4',
+					id: 's_code',
 					choices: [
 						{ label: 'Restart Photon', id: '4' },
 						{ label: 'Reboot Server', id: '5' },
@@ -52,6 +51,7 @@ export function getActionDefinitions(self) {
 						{ label: 'Shutdown Server', id: '7' },
 						{ label: 'Toggle UI Visibility', id: '10' },
 					],
+					default: '4',
 				},
 			],
 			callback: (action) => {
@@ -63,14 +63,18 @@ export function getActionDefinitions(self) {
 			options: [
 				{
 					type: 'textinput',
-					id: 'new_port',
 					label: 'New Port',
+					id: 'new_port',
 					regex: Regex.PORT,
 				},
 			],
 			callback: (action) => {
 				const newConfig = { ...self.config, port: parseInt(action.options.new_port) }
+
+				// 1) Persist to disk immediately
 				self.saveConfig(newConfig)
+
+				// 2) Immediately tear down/re-initialize the TCP socket on the new port
 				self.config = newConfig
 				self.setVariableValues({ target_port: newConfig.port.toString() })
 				self.updateStatus(InstanceStatus.Connecting)
@@ -78,18 +82,22 @@ export function getActionDefinitions(self) {
 			},
 		},
 		update_ip: {
-			name: 'Update Target IP',
+			name: 'Update Target IP Address',
 			options: [
 				{
 					type: 'textinput',
-					id: 'new_ip',
 					label: 'New IP Address',
+					id: 'new_ip',
 					regex: Regex.IP,
 				},
 			],
 			callback: (action) => {
 				const newConfig = { ...self.config, host: action.options.new_ip }
+
+				// 1) Persist to disk immediately
 				self.saveConfig(newConfig)
+
+				// 2) Immediately tear down/re-initialize the TCP socket on the new IP
 				self.config = newConfig
 				self.setVariableValues({ target_ip: newConfig.host })
 				self.updateStatus(InstanceStatus.Connecting)
