@@ -1,9 +1,11 @@
-import { Regex, InstanceBase, TCPHelper, InstanceStatus, runEntrypoint } from '@companion-module/base'
+import { Regex, InstanceBase, TCPHelper, InstanceStatus } from '@companion-module/base'
 import { getActionDefinitions } from './actions.js'
 import { getPresetDefinitions } from './presets.js'
 import { UpgradeScripts } from './upgrades.js'
 
-class instance extends InstanceBase {
+export { UpgradeScripts }
+
+export default class ModuleInstance extends InstanceBase {
 	async init(config) {
 		this.config = config
 		this.connectionFailures = 0
@@ -21,8 +23,8 @@ class instance extends InstanceBase {
 				connection_status: 'bad_config',
 				target_ip: '',
 				target_port: '',
-				connection_failures: this.connectionFailures.toString()
-			});
+				connection_failures: this.connectionFailures.toString(),
+			})
 			return
 		}
 
@@ -31,8 +33,8 @@ class instance extends InstanceBase {
 			connection_status: 'connecting',
 			target_ip: this.config.host || '',
 			target_port: this.config.port?.toString() || '',
-			connection_failures: this.connectionFailures.toString()
-		});
+			connection_failures: this.connectionFailures.toString(),
+		})
 		if (this.config.verbose) {
 			this.log('info', 'Status set to Connecting')
 		}
@@ -64,17 +66,17 @@ class instance extends InstanceBase {
 	}
 
 	init_variables() {
-		this.setVariableDefinitions([
-			{ variableId: 'connection_status', name: 'Connection Status' },
-			{ variableId: 'target_port', name: 'Target Port' },
-			{ variableId: 'target_ip', name: 'Target IP Address' },
-			{ variableId: 'connection_failures', name: 'Connection Failures' }
-		])
+		this.setVariableDefinitions({
+			connection_status: { name: 'Connection Status' },
+			target_port: { name: 'Target Port' },
+			target_ip: { name: 'Target IP Address' },
+			connection_failures: { name: 'Connection Failures' },
+		})
 		this.setVariableValues({
 			connection_status: 'unknown',
 			target_port: this.config.port?.toString() || '',
 			target_ip: this.config.host || '',
-			connection_failures: this.connectionFailures?.toString() || '0'
+			connection_failures: this.connectionFailures?.toString() || '0',
 		})
 	}
 
@@ -99,17 +101,20 @@ class instance extends InstanceBase {
 				connection_status: 'bad_config',
 				target_ip: '',
 				target_port: '',
-				connection_failures: this.connectionFailures.toString()
-			});
+				connection_failures: this.connectionFailures.toString(),
+			})
 			return
 		}
 
 		if (this.config.verbose) {
-			this.log('info', `Attempting to connect to ${this.config.host}:${this.config.port} (interval ${this.reconnectInterval}ms)`)
+			this.log(
+				'info',
+				`Attempting to connect to ${this.config.host}:${this.config.port} (interval ${this.reconnectInterval}ms)`,
+			)
 		}
 
 		// Create TCP helper with auto-reconnect
-		this.socket = new TCPHelper(this.config.host, this.config.port, {
+		this.socket = new TCPHelper(this.config.host, Number(this.config.port), {
 			reconnect: false,
 		})
 
@@ -140,7 +145,7 @@ class instance extends InstanceBase {
 				connection_status: varValue,
 				target_ip: this.config.host || '',
 				target_port: this.config.port?.toString() || '',
-				connection_failures: this.connectionFailures.toString()
+				connection_failures: this.connectionFailures.toString(),
 			})
 		})
 
@@ -151,8 +156,8 @@ class instance extends InstanceBase {
 			this.updateStatus(InstanceStatus.Ok)
 			this.setVariableValues({
 				connection_status: 'connected',
-				connection_failures: this.connectionFailures.toString()
-			});
+				connection_failures: this.connectionFailures.toString(),
+			})
 			if (this.config.verbose) {
 				this.log('info', 'Status set to Ok')
 			}
@@ -165,12 +170,12 @@ class instance extends InstanceBase {
 			this.connectionFailures = 0
 			this.setVariableValues({
 				connection_status: 'connected',
-				connection_failures: this.connectionFailures.toString()
-			});
+				connection_failures: this.connectionFailures.toString(),
+			})
 			if (this.reconnectInterval !== 5000) {
-			  this.reconnectInterval = 5000
-			  this.log('info', 'Connection successful. Resetting reconnect interval to 5 seconds.')
-			  this.init_tcp()
+				this.reconnectInterval = 5000
+				this.log('info', 'Connection successful. Resetting reconnect interval to 5 seconds.')
+				this.init_tcp()
 			}
 		})
 
@@ -181,7 +186,7 @@ class instance extends InstanceBase {
 				connection_status: 'disconnected',
 				target_ip: this.config.host || '',
 				target_port: this.config.port?.toString() || '',
-				connection_failures: this.connectionFailures.toString()
+				connection_failures: this.connectionFailures.toString(),
 			})
 			if (this.connectionFailures >= 3 && this.reconnectInterval < 10000) {
 				this.reconnectInterval = 10000
@@ -193,14 +198,14 @@ class instance extends InstanceBase {
 			}, this.reconnectInterval)
 		})
 
-		this.socket.on('close', () => {
+		this.socket.on('end', () => {
 			if (this.config.verbose) {
 				this.log('warn', 'TCP connection closed')
 			}
 			this.setVariableValues({
 				connection_status: 'disconnected',
-				connection_failures: this.connectionFailures.toString()
-			});
+				connection_failures: this.connectionFailures.toString(),
+			})
 
 			setTimeout(() => {
 				this.init_tcp()
@@ -234,7 +239,7 @@ class instance extends InstanceBase {
 				id: 'port',
 				label: 'Target Port (Default = 55503)',
 				width: 6,
-				default: 55503,
+				default: '55503',
 				regex: Regex.PORT,
 			},
 			{
@@ -277,8 +282,7 @@ class instance extends InstanceBase {
 		if (this.config.verbose) {
 			this.log('info', 'Initializing preset definitions')
 		}
-		this.setPresetDefinitions(getPresetDefinitions())
+		const { structure, presets } = getPresetDefinitions()
+		this.setPresetDefinitions(structure, presets)
 	}
 }
-
-runEntrypoint(instance, UpgradeScripts)
