@@ -19,9 +19,7 @@
 			"email": "david@got-fox.com"
 		}
 	],
-	"legacyIds": [
-		"vyvphoton"
-	],
+	"legacyIds": ["vyvphoton"],
 	"runtime": {
 		"type": "node26",
 		"api": "nodejs-ipc",
@@ -29,10 +27,6 @@
 		"entrypoint": "../index.js"
 	},
 	"manufacturer": "VYV",
-	"products": [
-		"Photon, Xenon, Tachyon"
-	],
-	"keywords": [
-		"Media Server"
-	]
+	"products": ["Photon, Xenon, Tachyon"],
+	"keywords": ["Media Server"]
 }

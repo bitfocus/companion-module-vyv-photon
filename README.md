@@ -14,10 +14,10 @@ This module also works with VYV's [Xenon](https://www.vyv.ca/products/xenon/) an
 
 ## Configuration
 
-| Field | Description |
-| --- | --- |
-| Target IP | IP address of the Photon/Xenon/Tachyon server |
-| Target Port | TCP port (default `55503`) |
+| Field                  | Description                                                   |
+| ---------------------- | ------------------------------------------------------------- |
+| Target IP              | IP address of the Photon/Xenon/Tachyon server                 |
+| Target Port            | TCP port (default `55503`)                                    |
 | Enable verbose logging | Logs detailed connection/command activity for troubleshooting |
 
 ## Actions
@@ -36,12 +36,12 @@ A button preset is provided for every default cue, listed under the "Default Cue
 
 ## Variables
 
-| Variable | Description |
-| --- | --- |
-| `connection_status` | Current connection state (`connected`, `connecting`, `disconnected`, `bad_config`, `unknown`) |
-| `target_ip` | Configured target IP address |
-| `target_port` | Configured target port |
-| `connection_failures` | Consecutive connection failure count |
+| Variable              | Description                                                                                   |
+| --------------------- | --------------------------------------------------------------------------------------------- |
+| `connection_status`   | Current connection state (`connected`, `connecting`, `disconnected`, `bad_config`, `unknown`) |
+| `target_ip`           | Configured target IP address                                                                  |
+| `target_port`         | Configured target port                                                                        |
+| `connection_failures` | Consecutive connection failure count                                                          |
 
 ## Support
 

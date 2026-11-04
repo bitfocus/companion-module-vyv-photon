@@ -23,8 +23,8 @@ export default class ModuleInstance extends InstanceBase {
 				connection_status: 'bad_config',
 				target_ip: '',
 				target_port: '',
-				connection_failures: this.connectionFailures.toString()
-			});
+				connection_failures: this.connectionFailures.toString(),
+			})
 			return
 		}
 
@@ -33,8 +33,8 @@ export default class ModuleInstance extends InstanceBase {
 			connection_status: 'connecting',
 			target_ip: this.config.host || '',
 			target_port: this.config.port?.toString() || '',
-			connection_failures: this.connectionFailures.toString()
-		});
+			connection_failures: this.connectionFailures.toString(),
+		})
 		if (this.config.verbose) {
 			this.log('info', 'Status set to Connecting')
 		}
@@ -76,7 +76,7 @@ export default class ModuleInstance extends InstanceBase {
 			connection_status: 'unknown',
 			target_port: this.config.port?.toString() || '',
 			target_ip: this.config.host || '',
-			connection_failures: this.connectionFailures?.toString() || '0'
+			connection_failures: this.connectionFailures?.toString() || '0',
 		})
 	}
 
@@ -101,13 +101,16 @@ export default class ModuleInstance extends InstanceBase {
 				connection_status: 'bad_config',
 				target_ip: '',
 				target_port: '',
-				connection_failures: this.connectionFailures.toString()
-			});
+				connection_failures: this.connectionFailures.toString(),
+			})
 			return
 		}
 
 		if (this.config.verbose) {
-			this.log('info', `Attempting to connect to ${this.config.host}:${this.config.port} (interval ${this.reconnectInterval}ms)`)
+			this.log(
+				'info',
+				`Attempting to connect to ${this.config.host}:${this.config.port} (interval ${this.reconnectInterval}ms)`,
+			)
 		}
 
 		// Create TCP helper with auto-reconnect
@@ -142,7 +145,7 @@ export default class ModuleInstance extends InstanceBase {
 				connection_status: varValue,
 				target_ip: this.config.host || '',
 				target_port: this.config.port?.toString() || '',
-				connection_failures: this.connectionFailures.toString()
+				connection_failures: this.connectionFailures.toString(),
 			})
 		})
 
@@ -153,8 +156,8 @@ export default class ModuleInstance extends InstanceBase {
 			this.updateStatus(InstanceStatus.Ok)
 			this.setVariableValues({
 				connection_status: 'connected',
-				connection_failures: this.connectionFailures.toString()
-			});
+				connection_failures: this.connectionFailures.toString(),
+			})
 			if (this.config.verbose) {
 				this.log('info', 'Status set to Ok')
 			}
@@ -167,12 +170,12 @@ export default class ModuleInstance extends InstanceBase {
 			this.connectionFailures = 0
 			this.setVariableValues({
 				connection_status: 'connected',
-				connection_failures: this.connectionFailures.toString()
-			});
+				connection_failures: this.connectionFailures.toString(),
+			})
 			if (this.reconnectInterval !== 5000) {
-			  this.reconnectInterval = 5000
-			  this.log('info', 'Connection successful. Resetting reconnect interval to 5 seconds.')
-			  this.init_tcp()
+				this.reconnectInterval = 5000
+				this.log('info', 'Connection successful. Resetting reconnect interval to 5 seconds.')
+				this.init_tcp()
 			}
 		})
 
@@ -183,7 +186,7 @@ export default class ModuleInstance extends InstanceBase {
 				connection_status: 'disconnected',
 				target_ip: this.config.host || '',
 				target_port: this.config.port?.toString() || '',
-				connection_failures: this.connectionFailures.toString()
+				connection_failures: this.connectionFailures.toString(),
 			})
 			if (this.connectionFailures >= 3 && this.reconnectInterval < 10000) {
 				this.reconnectInterval = 10000
@@ -201,8 +204,8 @@ export default class ModuleInstance extends InstanceBase {
 			}
 			this.setVariableValues({
 				connection_status: 'disconnected',
-				connection_failures: this.connectionFailures.toString()
-			});
+				connection_failures: this.connectionFailures.toString(),
+			})
 
 			setTimeout(() => {
 				this.init_tcp()
