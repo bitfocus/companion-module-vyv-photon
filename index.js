@@ -1,9 +1,11 @@
-import { Regex, InstanceBase, TCPHelper, InstanceStatus, runEntrypoint } from '@companion-module/base'
+import { Regex, InstanceBase, TCPHelper, InstanceStatus } from '@companion-module/base'
 import { getActionDefinitions } from './actions.js'
 import { getPresetDefinitions } from './presets.js'
 import { UpgradeScripts } from './upgrades.js'
 
-class instance extends InstanceBase {
+export { UpgradeScripts }
+
+export default class ModuleInstance extends InstanceBase {
 	async init(config) {
 		this.config = config
 		this.connectionFailures = 0
@@ -64,12 +66,12 @@ class instance extends InstanceBase {
 	}
 
 	init_variables() {
-		this.setVariableDefinitions([
-			{ variableId: 'connection_status', name: 'Connection Status' },
-			{ variableId: 'target_port', name: 'Target Port' },
-			{ variableId: 'target_ip', name: 'Target IP Address' },
-			{ variableId: 'connection_failures', name: 'Connection Failures' }
-		])
+		this.setVariableDefinitions({
+			connection_status: { name: 'Connection Status' },
+			target_port: { name: 'Target Port' },
+			target_ip: { name: 'Target IP Address' },
+			connection_failures: { name: 'Connection Failures' },
+		})
 		this.setVariableValues({
 			connection_status: 'unknown',
 			target_port: this.config.port?.toString() || '',
@@ -109,7 +111,7 @@ class instance extends InstanceBase {
 		}
 
 		// Create TCP helper with auto-reconnect
-		this.socket = new TCPHelper(this.config.host, this.config.port, {
+		this.socket = new TCPHelper(this.config.host, Number(this.config.port), {
 			reconnect: false,
 		})
 
@@ -193,7 +195,7 @@ class instance extends InstanceBase {
 			}, this.reconnectInterval)
 		})
 
-		this.socket.on('close', () => {
+		this.socket.on('end', () => {
 			if (this.config.verbose) {
 				this.log('warn', 'TCP connection closed')
 			}
@@ -234,7 +236,7 @@ class instance extends InstanceBase {
 				id: 'port',
 				label: 'Target Port (Default = 55503)',
 				width: 6,
-				default: 55503,
+				default: '55503',
 				regex: Regex.PORT,
 			},
 			{
@@ -277,8 +279,7 @@ class instance extends InstanceBase {
 		if (this.config.verbose) {
 			this.log('info', 'Initializing preset definitions')
 		}
-		this.setPresetDefinitions(getPresetDefinitions())
+		const { structure, presets } = getPresetDefinitions()
+		this.setPresetDefinitions(structure, presets)
 	}
 }
-
-runEntrypoint(instance, UpgradeScripts)
