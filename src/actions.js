@@ -1,4 +1,4 @@
-import { Regex, InstanceStatus } from '@companion-module/base'
+import { InstanceStatus } from '@companion-module/base'
 import { DEFAULT_CUES } from './cues.js'
 
 export function getActionDefinitions(self) {
@@ -52,6 +52,7 @@ export function getActionDefinitions(self) {
 						{ label: 'Toggle UI Visibility', id: '10' },
 					],
 					default: '4',
+					disableAutoExpression: true,
 				},
 			],
 			callback: (action) => {
@@ -62,10 +63,12 @@ export function getActionDefinitions(self) {
 			name: 'Update Target Port',
 			options: [
 				{
-					type: 'textinput',
+					type: 'number',
 					label: 'New Port',
 					id: 'new_port',
-					regex: Regex.PORT,
+					min: 1,
+					max: 65535,
+					default: 55503,
 				},
 			],
 			callback: (action) => {
@@ -88,7 +91,6 @@ export function getActionDefinitions(self) {
 					type: 'textinput',
 					label: 'New IP Address',
 					id: 'new_ip',
-					regex: Regex.IP,
 				},
 			],
 			callback: (action) => {

@@ -24,9 +24,9 @@
 		"type": "node26",
 		"api": "nodejs-ipc",
 		"apiVersion": "0.0.0",
-		"entrypoint": "../index.js"
+		"entrypoint": "../src/main.js"
 	},
 	"manufacturer": "VYV",
-	"products": ["Photon, Xenon, Tachyon"],
+	"products": ["Photon", "Xenon", "Tachyon"],
 	"keywords": ["Media Server"]
 }
