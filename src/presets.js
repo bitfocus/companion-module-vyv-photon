@@ -36,14 +36,7 @@ export function getPresetDefinitions() {
 		{
 			id: 'default_cues',
 			name: 'Default Cues',
-			definitions: [
-				{
-					id: 'default_cues_group',
-					type: 'simple',
-					name: 'Default Cues',
-					presets: presetIds,
-				},
-			],
+			definitions: presetIds,
 		},
 	]
 

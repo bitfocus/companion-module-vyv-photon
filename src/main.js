@@ -1,4 +1,4 @@
-import { Regex, InstanceBase, TCPHelper, InstanceStatus } from '@companion-module/base'
+import { InstanceBase, TCPHelper, InstanceStatus } from '@companion-module/base'
 import { getActionDefinitions } from './actions.js'
 import { getPresetDefinitions } from './presets.js'
 import { UpgradeScripts } from './upgrades.js'
@@ -54,6 +54,8 @@ export default class ModuleInstance extends InstanceBase {
 
 	// Cleanup when module is removed
 	async destroy() {
+		clearTimeout(this.reconnectTimer)
+		this.reconnectTimer = undefined
 		if (this.config.verbose) {
 			this.log('info', 'Destroy called, tearing down socket if exists')
 		}
@@ -80,7 +82,17 @@ export default class ModuleInstance extends InstanceBase {
 		})
 	}
 
+	scheduleReconnect() {
+		clearTimeout(this.reconnectTimer)
+		this.reconnectTimer = setTimeout(() => {
+			this.reconnectTimer = undefined
+			this.init_tcp()
+		}, this.reconnectInterval)
+	}
+
 	init_tcp() {
+		clearTimeout(this.reconnectTimer)
+		this.reconnectTimer = undefined
 		if (this.config.verbose) {
 			this.log('info', 'init_tcp() called')
 		}
@@ -113,8 +125,17 @@ export default class ModuleInstance extends InstanceBase {
 			)
 		}
 
-		// Create TCP helper with auto-reconnect
-		this.socket = new TCPHelper(this.config.host, Number(this.config.port), {
+		// Validate port
+		const port = Number(this.config.port)
+		if (!Number.isInteger(port) || port < 1 || port > 65535) {
+			this.log('error', 'TCP initialization aborted: Invalid port')
+			this.updateStatus(InstanceStatus.BadConfig, 'Invalid port')
+			this.setVariableValues({ connection_status: 'bad_config' })
+			return
+		}
+
+		// Reconnects are scheduled by the module (see scheduleReconnect)
+		this.socket = new TCPHelper(this.config.host, port, {
 			reconnect: false,
 		})
 
@@ -193,9 +214,7 @@ export default class ModuleInstance extends InstanceBase {
 				this.log('warn', 'Too many failures. Slowing reconnect interval to 10 seconds.')
 			}
 
-			setTimeout(() => {
-				this.init_tcp()
-			}, this.reconnectInterval)
+			this.scheduleReconnect()
 		})
 
 		this.socket.on('end', () => {
@@ -207,9 +226,7 @@ export default class ModuleInstance extends InstanceBase {
 				connection_failures: this.connectionFailures.toString(),
 			})
 
-			setTimeout(() => {
-				this.init_tcp()
-			}, this.reconnectInterval)
+			this.scheduleReconnect()
 		})
 
 		this.socket.on('data', (data) => {
@@ -232,15 +249,15 @@ export default class ModuleInstance extends InstanceBase {
 				id: 'host',
 				label: 'Target IP',
 				width: 6,
-				regex: Regex.IP,
 			},
 			{
-				type: 'textinput',
+				type: 'number',
 				id: 'port',
 				label: 'Target Port (Default = 55503)',
 				width: 6,
-				default: '55503',
-				regex: Regex.PORT,
+				min: 1,
+				max: 65535,
+				default: 55503,
 			},
 			{
 				type: 'checkbox',
